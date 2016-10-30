@@ -1,0 +1,329 @@
+
+redestec@fidebian:~$ ssh 10.0.2.157
+The authenticity of host '10.0.2.157 (10.0.2.157)' can't be established.
+ECDSA key fingerprint is 45:ed:47:90:76:67:9d:e0:b7:cb:38:99:40:1c:37:c8.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '10.0.2.157' (ECDSA) to the list of known hosts.
+redestec@10.0.2.157's password:
+Permission denied, please try again.
+redestec@10.0.2.157's password:
+
+redestec@fidebian:~$ ssh root@10.0.2.157
+root@10.0.2.157's password:
+Last login: Mon Oct 17 11:32:28 2016
+[root@centosasa3 ~]# ls
+anaconda-ks.cfg
+[root@centosasa3 ~]# uname -a
+Linux centosasa3.localdomain 3.10.0-327.36.1.el7.x86_64 #1 SMP Sun Sep 18 13:04:29 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+[root@centosasa3 ~]# man yum
+[root@centosasa3 ~]# yum update
+Complementos cargados:fastestmirror
+base | 3.6 kB 00:00
+
+extras | 3.4 kB 00:00
+
+updates | 3.4 kB 00:00
+
+Loading mirror speeds from cached hostfile
+
+    base: centos.xfree.com.ar
+    extras: centos.xfree.com.ar
+    updates: centos.xfree.com.ar Resolviendo dependencias --> Ejecutando prueba de transacción ---> Paquete kernel.x86_64 0:3.10.0-327.36.2.el7 debe ser instalado ---> Paquete kernel-tools.x86_64 0:3.10.0-327.36.1.el7 debe ser actualizado ---> Paquete kernel-tools.x86_64 0:3.10.0-327.36.2.el7 debe ser una actualización ---> Paquete kernel-tools-libs.x86_64 0:3.10.0-327.36.1.el7 debe ser actualizado ---> Paquete kernel-tools-libs.x86_64 0:3.10.0-327.36.2.el7 debe ser una actualización ---> Paquete python-perf.x86_64 0:3.10.0-327.36.1.el7 debe ser actualizado ---> Paquete python-perf.x86_64 0:3.10.0-327.36.2.el7 debe ser una actualización ---> Paquete tzdata.noarch 0:2016f-1.el7 debe ser actualizado ---> Paquete tzdata.noarch 0:2016g-2.el7 debe ser una actualización --> Resolución de dependencias finalizada
+
+Dependencias resueltas
+
+Package Arquitectura
+Versión Repositorio Tamaño
+
+Instalando:
+kernel x86_64 3.10.0-327.36.2.el7 updates 33 M
+Actualizando:
+kernel-tools x86_64 3.10.0-327.36.2.el7 updates 2.4 M
+kernel-tools-libs x86_64 3.10.0-327.36.2.el7 updates 2.3 M
+python-perf x86_64 3.10.0-327.36.2.el7 updates 2.4 M
+tzdata noarch 2016g-2.el7 updates 440 k
+Resumen de la transacción
+
+Instalar 1 Paquete
+Actualizar 4 Paquetes
+
+Tamaño total de la descarga: 41 M
+Is this ok [y/d/N]: y
+Downloading packages:
+Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
+(1/5): tzdata-2016g-2.el7.noarch.rpm | 440 kB 00:03
+
+(2/5): kernel-tools-3.10.0-327.36.2.el7.x86_64.rpm | 2.4 MB 00:08
+
+(3/5): kernel-tools-libs-3.10.0-327.36.2.el7.x86_64.rpm | 2.3 MB 00:10
+
+(4/5): python-perf-3.10.0-327.36.2.el7.x86_64.rpm | 2.4 MB 00:10
+(5/5): kernel-3.10.0-327.36.2.el7.x86_64.rpm | 33 MB 00:33
+
+Total 1.2 MB/s | 41 MB 00:33
+
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+Actualizando : kernel-tools-libs-3.10.0-327.36.2.el7.x86_64 1/9
+Actualizando : kernel-tools-3.10.0-327.36.2.el7.x86_64 2/9
+Actualizando : python-perf-3.10.0-327.36.2.el7.x86_64 3/9
+Actualizando : tzdata-2016g-2.el7.noarch 4/9
+Instalando : kernel-3.10.0-327.36.2.el7.x86_64 5/9
+Limpieza : tzdata-2016f-1.el7.noarch 6/9
+Limpieza : kernel-tools-3.10.0-327.36.1.el7.x86_64 7/9
+Limpieza : kernel-tools-libs-3.10.0-327.36.1.el7.x86_64 8/9
+Limpieza : python-perf-3.10.0-327.36.1.el7.x86_64 9/9
+Comprobando : kernel-3.10.0-327.36.2.el7.x86_64 1/9
+Comprobando : tzdata-2016g-2.el7.noarch 2/9
+Comprobando : python-perf-3.10.0-327.36.2.el7.x86_64 3/9
+Comprobando : kernel-tools-libs-3.10.0-327.36.2.el7.x86_64 4/9
+Comprobando : kernel-tools-3.10.0-327.36.2.el7.x86_64 5/9
+Comprobando : kernel-tools-3.10.0-327.36.1.el7.x86_64 6/9
+Comprobando : kernel-tools-libs-3.10.0-327.36.1.el7.x86_64 7/9
+Comprobando : python-perf-3.10.0-327.36.1.el7.x86_64 8/9
+Comprobando : tzdata-2016f-1.el7.noarch 9/9
+
+Instalado:
+kernel.x86_64 0:3.10.0-327.36.2.el7
+
+Actualizado:
+kernel-tools.x86_64 0:3.10.0-327.36.2.el7
+
+kernel-tools-libs.x86_64 0:3.10.0-327.36.2.el7
+
+python-perf.x86_64 0:3.10.0-327.36.2.el7
+
+tzdata.noarch 0:2016g-2.el7
+
+¡Listo!
+[root@centosasa3 ~]# vi /etc/hostname
+[root@centosasa3 ~]# hostnamectl
+Static hostname: sony01.localdomain
+Icon name: computer-vm
+Chassis: vm
+Machine ID: 2ec5c00888f5a1448a75cba3faaec36e
+Boot ID: 7eef78b49bb54c83a7271839d7e7bb26
+Virtualization: kvm
+Operating System: CentOS Linux 7 (Core)
+CPE OS Name: cpe:/o:centos:centos:7
+Kernel: Linux 3.10.0-327.36.1.el7.x86_64
+Architecture: x86-64
+[root@centosasa3 ~]# hostnamectl set-hostname sony01
+[root@centosasa3 ~]# hostnamectl
+Static hostname: sony01
+Icon name: computer-vm
+Chassis: vm
+Machine ID: 2ec5c00888f5a1448a75cba3faaec36e
+Boot ID: 7eef78b49bb54c83a7271839d7e7bb26
+Virtualization: kvm
+Operating System: CentOS Linux 7 (Core)
+CPE OS Name: cpe:/o:centos:centos:7
+Kernel: Linux 3.10.0-327.36.1.el7.x86_64
+Architecture: x86-64
+[root@centosasa3 ~]# yum install ntp
+Complementos cargados:fastestmirror
+Loading mirror speeds from cached hostfile
+
+    base: centos.xfree.com.ar
+    extras: centos.xfree.com.ar
+    updates: centos.xfree.com.ar Resolviendo dependencias --> Ejecutando prueba de transacción ---> Paquete ntp.x86_64 0:4.2.6p5-22.el7.centos.2 debe ser instalado --> Procesando dependencias: ntpdate = 4.2.6p5-22.el7.centos.2 para el paquete: ntp-4.2.6p5-22.el7.centos.2.x86_64 --> Procesando dependencias: libopts.so.25()(64bit) para el paquete: ntp-4.2.6p5-22.el7.centos.2.x86_64 --> Ejecutando prueba de transacción ---> Paquete autogen-libopts.x86_64 0:5.18-5.el7 debe ser instalado ---> Paquete ntpdate.x86_64 0:4.2.6p5-22.el7.centos.2 debe ser instalado --> Resolución de dependencias finalizada
+
+Dependencias resueltas
+
+Package Arquitectura
+Versión Repositorio Tamaño
+
+Instalando:
+ntp x86_64 4.2.6p5-22.el7.centos.2 updates 544 k
+Instalando para las dependencias:
+autogen-libopts x86_64 5.18-5.el7 base 66 k
+ntpdate x86_64 4.2.6p5-22.el7.centos.2 updates 84 k
+Resumen de la transacción
+
+Instalar 1 Paquete (+2 Paquetes dependientes)
+
+Tamaño total de la descarga: 694 k
+Tamaño instalado: 1.6 M
+Is this ok [y/d/N]: y
+Downloading packages:
+(1/3): ntpdate-4.2.6p5-22.el7.centos.2.x86_64.rpm | 84 kB 00:00
+
+(2/3): autogen-libopts-5.18-5.el7.x86_64.rpm | 66 kB 00:00
+(3/3): ntp-4.2.6p5-22.el7.centos.2.x86_64.rpm | 544 kB 00:00
+
+Total 744 kB/s | 694 kB 00:00
+
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+Instalando : autogen-libopts-5.18-5.el7.x86_64 1/3
+Instalando : ntpdate-4.2.6p5-22.el7.centos.2.x86_64 2/3
+Instalando : ntp-4.2.6p5-22.el7.centos.2.x86_64 3/3
+warning: /etc/ntp.conf created as /etc/ntp.conf.rpmnew
+Comprobando : ntp-4.2.6p5-22.el7.centos.2.x86_64 1/3
+Comprobando : ntpdate-4.2.6p5-22.el7.centos.2.x86_64 2/3
+Comprobando : autogen-libopts-5.18-5.el7.x86_64 3/3
+
+Instalado:
+ntp.x86_64 0:4.2.6p5-22.el7.centos.2
+
+Dependencia(s) instalada(s):
+autogen-libopts.x86_64 0:5.18-5.el7 ntpdate.x86_64 0:4.2.6p5-22.el7.centos.2
+
+[root@centosasa3 ~]# systemctl start ntpd
+[root@centosasa3 ~]# inxi
+-bash: inxi: no se encontró la orden
+[root@centosasa3 ~]# cat /proc/cpuinfo
+processor : 0
+vendor_id : GenuineIntel
+cpu family : 15
+model : 6
+model name : Common KVM processor
+stepping : 1
+microcode : 0x1
+cpu MHz : 3999.996
+cache size : 4096 KB
+physical id : 0
+siblings : 1
+core id : 0
+cpu cores : 1
+apicid : 0
+initial apicid : 0
+fpu : yes
+fpu_exception : yes
+cpuid level : 13
+wp : yes
+flags : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx lm constant_tsc nopl pni cx16 x2apic hypervisor lahf_lm
+bogomips : 7999.99
+clflush size : 64
+cache_alignment : 128
+address sizes : 40 bits physical, 48 bits virtual
+power management:
+
+[root@centosasa3 ~]# systemctl status ntpd
+● ntpd.service - Network Time Service
+Loaded: loaded (/usr/lib/systemd/system/ntpd.service; disabled; vendor preset: disabled)
+Active: active (running) since lun 2016-10-17 20:16:48 ART; 41s ago
+Process: 11816 ExecStart=/usr/sbin/ntpd -u ntp:ntp $OPTIONS (code=exited, status=0/SUCCESS)
+Main PID: 11817 (ntpd)
+CGroup: /system.slice/ntpd.service
+└─11817 /usr/sbin/ntpd -u ntp:ntp -g
+
+oct 17 20:16:48 sony01 ntpd[11817]: Listen and drop on 1 v6wildcard :: UDP 123
+oct 17 20:16:48 sony01 ntpd[11817]: Listen normally on 2 lo 127.0.0.1 UDP 123
+oct 17 20:16:48 sony01 ntpd[11817]: Listen normally on 3 eth0 10.0.2.157 UDP 123
+oct 17 20:16:48 sony01 ntpd[11817]: Listen normally on 4 lo ::1 UDP 123
+oct 17 20:16:48 sony01 ntpd[11817]: Listen normally on 5 eth0 fe80::9cdf:c3...23
+oct 17 20:16:48 sony01 ntpd[11817]: Listening on routing socket on fd #22 f...es
+oct 17 20:16:48 sony01 ntpd[11817]: 0.0.0.0 c016 06 restart
+oct 17 20:16:48 sony01 ntpd[11817]: 0.0.0.0 c012 02 freq_set kernel 0.000 PPM
+oct 17 20:16:48 sony01 ntpd[11817]: 0.0.0.0 c011 01 freq_not_set
+oct 17 20:16:49 sony01 ntpd[11817]: 0.0.0.0 c614 04 freq_mode
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@centosasa3 ~]# ntpd -q
+[root@centosasa3 ~]# man ntpd
+[root@centosasa3 ~]# cd /etc
+[root@centosasa3 etc]# vi ntp.conf
+[root@centosasa3 etc]# man ntpdate
+[root@centosasa3 etc]# date
+lun oct 17 20:20:33 ART 2016
+[root@centosasa3 etc]# man ntpd
+[root@centosasa3 etc]# vi ntp.conf
+[root@centosasa3 etc]# ntpd -d
+ntpd 4.2.6p5@1.2349-o Tue May 31 10:28:54 UTC 2016 (1)
+17 Oct 20:23:33 ntpd[11868]: proto: precision = 0.033 usec
+17 Oct 20:23:33 ntpd[11868]: 0.0.0.0 c01d 0d kern kernel time sync enabled
+event at 0 0.0.0.0 c01d 0d kern kernel time sync enabled
+Finished Parsing!!
+restrict: op 1 addr 0.0.0.0 mask 0.0.0.0 mflags 00000000 flags 000001d0
+restrict: op 1 addr :: mask 0.0.0.0 mflags 00000000 flags 000001d0
+restrict: op 1 addr 127.0.0.1 mask 255.255.255.255 mflags 00000000 flags 00000000
+restrict: op 1 addr ::1 mask ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff mflags 00000000 flags 00000000
+17 Oct 20:23:33 ntpd[11868]: ntp_io: estimated max descriptors: 1024, initial socket boundary: 16
+17 Oct 20:23:33 ntpd[11868]: unable to bind to wildcard address 0.0.0.0 - another process may be running - EXITING
+[root@centosasa3 etc]# ntpd -D
+/usr/sbin/ntpd: The 'set-debug-level' option requires an argument.
+ntpd - NTP daemon program - Ver. 4.2.6p5
+Usage: ntpd [ - [] | --[{=| }] ]...
+Try 'ntpd --help' for more information.
+
+exit 1
+[root@centosasa3 etc]# ntpd --help
+ntpd - NTP daemon program - Ver. 4.2.6p5
+Usage: ntpd [ - [] | --[{=| }] ]...
+Flg Arg Option-Name Description
+-4 no ipv4 Force IPv4 DNS name resolution
+- prohibits the option 'ipv6'
+-6 no ipv6 Force IPv6 DNS name resolution
+- prohibits the option 'ipv4'
+-a no authreq Require crypto authentication
+- prohibits the option 'authnoreq'
+-A no authnoreq Do not require crypto authentication
+- prohibits the option 'authreq'
+-b no bcastsync Allow us to sync to broadcast servers
+-c Str configfile configuration file name
+-d no debug-level Increase output debug message level
+- may appear multiple times
+-D Str set-debug-level Set the output debug message level
+- may appear multiple times
+-f Str driftfile frequency drift file name
+-g no panicgate Allow the first adjustment to be Big
+- may appear multiple times
+-i Str jaildir Jail directory
+-I Str interface Listen on an interface name or address
+- may appear multiple times
+-k Str keyfile path to symmetric keys
+-l Str logfile path to the log file
+-L no novirtualips Do not listen to virtual interfaces
+-m no mlock Lock memory
+-n no nofork Do not fork
+-N no nice Run at high priority
+-p Str pidfile path to the PID file
+- may appear up to 2 times
+-P Num priority Process priority
+-q no quit Set the time and quit
+-r Str propagationdelay Broadcast/propagation delay
+Str saveconfigquit Save parsed configuration and quit
+-s Str statsdir Statistics file location
+-t Str trustedkey Trusted key number
+- may appear multiple times
+-u Str user Run as userid (or userid:groupid)
+- may appear up to 2 times
+-U Num updateinterval interval in seconds between scans for new or dropped interfaces
+Str var make ARG an ntp variable (RW)
+- may appear multiple times
+Str dvar make ARG an ntp variable (RW|DEF)
+- may appear multiple times
+-x no slew Slew up to 600 seconds
+-! opt version output version information and exit
+-? no help display extended usage information and exit
+-! no more-help extended usage information passed thru pager
+
+Options are specified by doubled hyphens and their name or by a single
+hyphen and the flag character.
+
+The following option preset mechanisms are supported:
+
+    examining environment variables named NTPD_*
+
+Please send bug reports to:
+
+exit 0
+[root@centosasa3 etc]# vi ntp.conf
+Hosts on local network are less restricted.
+
+#restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap
+Use public servers from the pool.ntp.org project.
+Please consider joining the pool (http://www.pool.ntp.org/join.html).
+
+server 2.ar.pool.ntp.org
+server 0.south-america.pool.ntp.org
+server 2.south-america.pool.ntp.org
+
+[root@centosasa3 etc]# reboot
+
+¡Listo!
+[root@centosasa3 ~]#
