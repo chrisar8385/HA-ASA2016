@@ -1,0 +1,95 @@
+[root@sony01 ~]# systemctl disable chronyd
+Removed symlink /etc/systemd/system/multi-user.target.wants/chronyd.service.
+[root@sony01 ~]# systemctl enable ntpd
+
+[root@sony01 ~]# cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+[root@sony01 ~]# echo -e "10.0.2.158\tsony02" >> /etc/hosts
+[root@sony01 ~]# cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.0.2.158	sony02
+[root@sony01 ~]# ping sony02
+PING sony02 (10.0.2.158) 56(84) bytes of data.
+64 bytes from sony02 (10.0.2.158): icmp_seq=1 ttl=64 time=0.259 ms
+64 bytes from sony02 (10.0.2.158): icmp_seq=2 ttl=64 time=0.214 ms
+^C
+--- sony02 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 999ms
+rtt min/avg/max/mdev = 0.214/0.236/0.259/0.027 ms
+
+
+[root@sony01 ~]# ssh-keygen -t dsa -N ""
+Generating public/private dsa key pair.
+Enter file in which to save the key (/root/.ssh/id_dsa): 
+Created directory '/root/.ssh'.
+Your identification has been saved in /root/.ssh/id_dsa.
+Your public key has been saved in /root/.ssh/id_dsa.pub.
+The key fingerprint is:
+e2:bb:ac:f4:89:aa:31:88:21:f7:30:aa:67:c9:22:0b root@sony01
+The key's randomart image is:
++--[ DSA 1024]----+
+|                 |
+|                 |
+|                 |
+|                 |
+|o +   . S        |
+|++ + . .         |
+|E. .o .          |
+|=o=. + o         |
+|=*..o.*.         |
++-----------------+
+[root@sony01 ~]# scp .ssh/id_dsa.pub root@sony02:/root/.ssh/authorized_keys
+The authenticity of host 'sony02 (10.0.2.158)' can't be established.
+ECDSA key fingerprint is 45:ed:47:90:76:67:9d:e0:b7:cb:38:99:40:1c:37:c8.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'sony02,10.0.2.158' (ECDSA) to the list of known hosts.
+root@sony02's password: 
+id_dsa.pub                                    100%  601     0.6KB/s   00:00 
+[root@sony01 ~]# ssh root@sony02
+Last login: Thu Oct 20 16:09:28 2016 from sony01
+[root@sony02 ~]# 
+
+# yum install -y pacemaker pcs psmisc policycoreutils-python
+¡Listo!
+
+[root@sony01 ~]# firewall-cmd --permanent --add-service=high-availability
+success
+[root@sony01 ~]# firewall-cmd --reload
+success
+
+[root@sony02 ~]# systemctl start pcsd.service
+[root@sony02 ~]# systemctl enable pcsd.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/pcsd.service to /usr/lib/systemd/system/pcsd.service.
+[root@sony02 ~]# passwd hacluster
+Cambiando la contraseña del usuario hacluster.
+Nueva contraseña: 
+CONTRASEÑA INCORRECTA: La contraseña tiene menos de 8 caracteres
+Vuelva a escribir la nueva contraseña: 
+passwd: todos los símbolos de autenticación se actualizaron con éxito.
+
+NOTA: la contraseña es 1234
+
+[root@sony01 ~]# pcs cluster auth sony01 sony02
+Username: hacluster
+Password: 
+sony02: Authorized
+sony01: Authorized
+
+[root@sony01 ~]# pcs cluster setup --name micluster sony01 sony02 
+Shutting down pacemaker/corosync services...
+Redirecting to /bin/systemctl stop  pacemaker.service
+Redirecting to /bin/systemctl stop  corosync.service
+Killing any remaining services...
+Removing all cluster configuration files...
+sony01: Succeeded
+sony02: Succeeded
+Synchronizing pcsd certificates on nodes sony01, sony02...
+sony02: Success
+sony01: Success
+
+Restaring pcsd on the nodes in order to reload the certificates...
+sony02: Success
+sony01: Success
+
