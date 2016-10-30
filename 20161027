@@ -1,0 +1,247 @@
+[root@sony01 ~]# pcs cluster start --all
+sony02: Starting Cluster...
+sony01: Starting Cluster...
+[root@sony01 ~]# 
+
+[root@sony01 ~]# systemctl status pacemaker.service
+● pacemaker.service - Pacemaker High Availability Cluster Manager
+   Loaded: loaded (/usr/lib/systemd/system/pacemaker.service; disabled; vendor preset: disabled)
+   Active: active (running) since jue 2016-10-27 16:13:40 ART; 3min 15s ago
+ Main PID: 18388 (pacemakerd)
+   CGroup: /system.slice/pacemaker.service
+           ├─18388 /usr/sbin/pacemakerd -f
+           ├─18389 /usr/libexec/pacemaker/cib
+           ├─18390 /usr/libexec/pacemaker/stonithd
+           ├─18391 /usr/libexec/pacemaker/lrmd
+           ├─18392 /usr/libexec/pacemaker/attrd
+           ├─18393 /usr/libexec/pacemaker/pengine
+           └─18394 /usr/libexec/pacemaker/crmd
+
+oct 27 16:13:41 sony01 crmd[18394]:   notice: Notifications disabled
+oct 27 16:13:41 sony01 crmd[18394]:   notice: The local CRM is operational
+oct 27 16:13:41 sony01 crmd[18394]:   notice: State transition S_STARTING -... ]
+oct 27 16:13:41 sony01 stonith-ng[18390]:   notice: Watching for stonith top...s
+oct 27 16:13:41 sony01 attrd[18392]:   notice: crm_update_peer_proc: Node s...))
+oct 27 16:13:41 sony01 stonith-ng[18390]:   notice: crm_update_peer_proc: No...)
+oct 27 16:14:02 sony01 crmd[18394]:  warning: FSA: Input I_DC_TIMEOUT from ...NG
+oct 27 16:14:02 sony01 crmd[18394]:   notice: State transition S_ELECTION -... ]
+oct 27 16:14:02 sony01 crmd[18394]:   notice: State transition S_PENDING ->... ]
+oct 27 16:14:02 sony01 attrd[18392]:   notice: Processing sync-response fro...02
+Hint: Some lines were ellipsized, use -l to show in full.
+
+[root@sony01 ~]# systemctl status corosync.service
+● corosync.service - Corosync Cluster Engine
+   Loaded: loaded (/usr/lib/systemd/system/corosync.service; disabled; vendor preset: disabled)
+   Active: active (running) since jue 2016-10-27 16:13:39 ART; 4min 12s ago
+  Process: 18366 ExecStart=/usr/share/corosync/corosync start (code=exited, status=0/SUCCESS)
+ Main PID: 18373 (corosync)
+   CGroup: /system.slice/corosync.service
+           └─18373 corosync
+
+oct 27 16:13:39 sony01 corosync[18373]:  [VOTEQ ] Waiting for all cluster me...2
+oct 27 16:13:39 sony01 corosync[18373]:  [QUORUM] Members[1]: 1
+oct 27 16:13:39 sony01 corosync[18373]:  [MAIN  ] Completed service synchron....
+oct 27 16:13:39 sony01 corosync[18373]:  [TOTEM ] A new membership (10.0.2.1...2
+oct 27 16:13:39 sony01 corosync[18373]:  [VOTEQ ] Waiting for all cluster me...2
+oct 27 16:13:39 sony01 corosync[18373]:  [QUORUM] This node is within the pr....
+oct 27 16:13:39 sony01 corosync[18373]:  [QUORUM] Members[2]: 1 2
+oct 27 16:13:39 sony01 corosync[18373]:  [MAIN  ] Completed service synchron....
+oct 27 16:13:39 sony01 corosync[18366]: Starting Corosync Cluster Engine (co...]
+oct 27 16:13:39 sony01 systemd[1]: Started Corosync Cluster Engine.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+[root@sony01 ~]# corosync-cfgtool -s
+Printing ring status.
+Local node ID 1
+RING ID 0
+	id	= 10.0.2.157
+	status	= ring 0 active with no faults
+[root@sony01 ~]# 
+
+[root@sony02 ~]# corosync-cfgtool -s
+Printing ring status.
+Local node ID 2
+RING ID 0
+	id	= 10.0.2.158
+	status	= ring 0 active with no faults
+[root@sony02 ~]# 
+[root@sony01 ~]#  corosync-cmapctl  | grep members
+runtime.totem.pg.mrp.srp.members.1.config_version (u64) = 0
+runtime.totem.pg.mrp.srp.members.1.ip (str) = r(0) ip(10.0.2.157) 
+runtime.totem.pg.mrp.srp.members.1.join_count (u32) = 1
+runtime.totem.pg.mrp.srp.members.1.status (str) = joined
+runtime.totem.pg.mrp.srp.members.2.config_version (u64) = 0
+runtime.totem.pg.mrp.srp.members.2.ip (str) = r(0) ip(10.0.2.158) 
+runtime.totem.pg.mrp.srp.members.2.join_count (u32) = 1
+runtime.totem.pg.mrp.srp.members.2.status (str) = joined
+
+[root@sony02 ~]#  corosync-cmapctl  | grep members
+runtime.totem.pg.mrp.srp.members.1.config_version (u64) = 0
+runtime.totem.pg.mrp.srp.members.1.ip (str) = r(0) ip(10.0.2.157) 
+runtime.totem.pg.mrp.srp.members.1.join_count (u32) = 1
+runtime.totem.pg.mrp.srp.members.1.status (str) = joined
+runtime.totem.pg.mrp.srp.members.2.config_version (u64) = 0
+runtime.totem.pg.mrp.srp.members.2.ip (str) = r(0) ip(10.0.2.158) 
+runtime.totem.pg.mrp.srp.members.2.join_count (u32) = 1
+runtime.totem.pg.mrp.srp.members.2.status (str) = joined
+
+[root@sony01 ~]# pcs status corosync
+
+Membership information
+----------------------
+    Nodeid      Votes Name
+         1          1 sony01 (local)
+         2          1 sony02
+
+[root@sony02 ~]# pcs status corosync
+
+Membership information
+----------------------
+    Nodeid      Votes Name
+         1          1 sony01
+         2          1 sony02 (local)
+
+[root@sony01 ~]# ps axf | grep pace | grep -v grep
+18388 ?        Ss     0:00 /usr/sbin/pacemakerd -f
+18389 ?        Ss     0:00  \_ /usr/libexec/pacemaker/cib
+18390 ?        Ss     0:00  \_ /usr/libexec/pacemaker/stonithd
+18391 ?        Ss     0:00  \_ /usr/libexec/pacemaker/lrmd
+18392 ?        Ss     0:00  \_ /usr/libexec/pacemaker/attrd
+18393 ?        Ss     0:00  \_ /usr/libexec/pacemaker/pengine
+18394 ?        Ss     0:00  \_ /usr/libexec/pacemaker/crmd
+
+[root@sony02 ~]# ps axf | grep pace | grep -v grep
+18057 ?        Ss     0:00 /usr/sbin/pacemakerd -f
+18058 ?        Ss     0:00  \_ /usr/libexec/pacemaker/cib
+18059 ?        Ss     0:00  \_ /usr/libexec/pacemaker/stonithd
+18060 ?        Ss     0:00  \_ /usr/libexec/pacemaker/lrmd
+18061 ?        Ss     0:00  \_ /usr/libexec/pacemaker/attrd
+18062 ?        Ss     0:00  \_ /usr/libexec/pacemaker/pengine
+18063 ?        Ss     0:00  \_ /usr/libexec/pacemaker/crmd
+
+[root@sony01 ~]# pcs status
+Cluster name: micluster
+WARNING: no stonith devices and stonith-enabled is not false
+Last updated: Thu Oct 27 16:35:42 2016		Last change: Thu Oct 27 16:14:02 2016 by hacluster via crmd on sony02
+Stack: corosync
+Current DC: sony02 (version 1.1.13-10.el7_2.4-44eb2dd) - partition with quorum
+2 nodes and 0 resources configured
+
+Online: [ sony01 sony02 ]
+
+Full list of resources:
+
+
+PCSD Status:
+  sony01: Online
+  sony02: Online
+
+Daemon Status:
+  corosync: active/disabled
+  pacemaker: active/disabled
+  pcsd: active/enabled
+
+[root@sony02 ~]# pcs status
+Cluster name: micluster
+WARNING: no stonith devices and stonith-enabled is not false
+Last updated: Thu Oct 27 16:36:39 2016		Last change: Thu Oct 27 16:14:02 2016 by hacluster via crmd on sony02
+Stack: corosync
+Current DC: sony02 (version 1.1.13-10.el7_2.4-44eb2dd) - partition with quorum
+2 nodes and 0 resources configured
+
+Online: [ sony01 sony02 ]
+
+Full list of resources:
+
+
+PCSD Status:
+  sony01: Online
+  sony02: Online
+
+Daemon Status:
+  corosync: active/disabled
+  pacemaker: active/disabled
+  pcsd: active/enabled
+
+[root@sony01 ~]# journalctl | grep -i error
+oct 20 17:57:17 sony01 passwd[2533]: pam_pwquality(passwd:chauthtok): pam_get_authtok_verify returned error: Error de comprobación preliminar del servicio de contraseña
+[root@sony01 ~]# 
+
+[root@sony02 ~]# journalctl | grep -i error
+oct 27 16:14:02 sony02 pengine[18062]:    error: Resource start-up disabled since no STONITH resources have been defined
+oct 27 16:14:02 sony02 pengine[18062]:    error: Either configure some or disable STONITH with the stonith-enabled option
+oct 27 16:14:02 sony02 pengine[18062]:    error: NOTE: Clusters with shared data need STONITH to ensure data integrity
+oct 27 16:14:02 sony02 pengine[18062]:   notice: Configuration ERRORs found during PE processing.  Please run "crm_verify -L" to identify issues.
+oct 27 16:14:02 sony02 pengine[18062]:    error: Resource start-up disabled since no STONITH resources have been defined
+oct 27 16:14:02 sony02 pengine[18062]:    error: Either configure some or disable STONITH with the stonith-enabled option
+oct 27 16:14:02 sony02 pengine[18062]:    error: NOTE: Clusters with shared data need STONITH to ensure data integrity
+oct 27 16:14:02 sony02 pengine[18062]:   notice: Configuration ERRORs found during PE processing.  Please run "crm_verify -L" to identify issues.
+oct 27 16:14:02 sony02 pengine[18062]:    error: Resource start-up disabled since no STONITH resources have been defined
+oct 27 16:14:02 sony02 pengine[18062]:    error: Either configure some or disable STONITH with the stonith-enabled option
+oct 27 16:14:02 sony02 pengine[18062]:    error: NOTE: Clusters with shared data need STONITH to ensure data integrity
+oct 27 16:14:02 sony02 pengine[18062]:   notice: Configuration ERRORs found during PE processing.  Please run "crm_verify -L" to identify issues.
+oct 27 16:29:02 sony02 pengine[18062]:    error: Resource start-up disabled since no STONITH resources have been defined
+oct 27 16:29:02 sony02 pengine[18062]:    error: Either configure some or disable STONITH with the stonith-enabled option
+oct 27 16:29:02 sony02 pengine[18062]:    error: NOTE: Clusters with shared data need STONITH to ensure data integrity
+oct 27 16:29:02 sony02 pengine[18062]:   notice: Configuration ERRORs found during PE processing.  Please run "crm_verify -L" to identify issues.
+
+[root@sony01 ~]# pcs cluster cib
+<cib crm_feature_set="3.0.10" validate-with="pacemaker-2.3" epoch="5" num_updates="9" admin_epoch="0" cib-last-written="Thu Oct 27 16:14:02 2016" update-origin="sony02" update-client="crmd" update-user="hacluster" have-quorum="1" dc-uuid="2">
+  <configuration>
+    <crm_config>
+      <cluster_property_set id="cib-bootstrap-options">
+        <nvpair id="cib-bootstrap-options-have-watchdog" name="have-watchdog" value="false"/>
+        <nvpair id="cib-bootstrap-options-dc-version" name="dc-version" value="1.1.13-10.el7_2.4-44eb2dd"/>
+        <nvpair id="cib-bootstrap-options-cluster-infrastructure" name="cluster-infrastructure" value="corosync"/>
+        <nvpair id="cib-bootstrap-options-cluster-name" name="cluster-name" value="micluster"/>
+      </cluster_property_set>
+    </crm_config>
+    <nodes>
+      <node id="1" uname="sony01"/>
+      <node id="2" uname="sony02"/>
+    </nodes>
+    <resources/>
+    <constraints/>
+  </configuration>
+  <status>
+    <node_state id="2" uname="sony02" in_ccm="true" crmd="online" crm-debug-origin="do_state_transition" join="member" expected="member">
+      <lrm id="2">
+        <lrm_resources/>
+      </lrm>
+      <transient_attributes id="2">
+        <instance_attributes id="status-2">
+          <nvpair id="status-2-shutdown" name="shutdown" value="0"/>
+          <nvpair id="status-2-probe_complete" name="probe_complete" value="true"/>
+        </instance_attributes>
+      </transient_attributes>
+    </node_state>
+    <node_state id="1" uname="sony01" in_ccm="true" crmd="online" crm-debug-origin="do_state_transition" join="member" expected="member">
+      <transient_attributes id="1">
+        <instance_attributes id="status-1">
+          <nvpair id="status-1-shutdown" name="shutdown" value="0"/>
+          <nvpair id="status-1-probe_complete" name="probe_complete" value="true"/>
+        </instance_attributes>
+      </transient_attributes>
+      <lrm id="1">
+        <lrm_resources/>
+      </lrm>
+    </node_state>
+  </status>
+</cib>
+
+[root@sony01 ~]# crm_verify -L -V
+   error: unpack_resources:	Resource start-up disabled since no STONITH resources have been defined
+   error: unpack_resources:	Either configure some or disable STONITH with the stonith-enabled option
+   error: unpack_resources:	NOTE: Clusters with shared data need STONITH to ensure data integrity
+Errors found during check: config not valid
+
+[root@sony02 ~]# crm_verify -L -V
+   error: unpack_resources:	Resource start-up disabled since no STONITH resources have been defined
+   error: unpack_resources:	Either configure some or disable STONITH with the stonith-enabled option
+   error: unpack_resources:	NOTE: Clusters with shared data need STONITH to ensure data integrity
+Errors found during check: config not valid
+
+[root@sony01 ~]# pcs property set stonith-enabled=false
+[root@sony01 ~]# crm_verify -L -V
+
+[root@sony02 ~]# crm_verify -L -V
