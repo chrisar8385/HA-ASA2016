@@ -1,0 +1,482 @@
+Preguntas hasta 2.4.2
+
+1) Cuál es el archivo que identifica la versión de Centos del sistema. 
+
+[root@sony01 etc]# cat centos-release
+CentOS Linux release 7.2.1511 (Core) 
+
+2) ¿Comparable a qué software de debian es yum?
+
+A apt (aptitude).
+
+3) ¿Utiliza systemd o init? 
+
+systemd.
+
+4) ¿Cómo verifica que los nodos están efectivamente sincronizando con NTP? 
+
+ntpq -p
+
+5) ¿Qué comandos utiliza para iniciar y habilitar el servicio de NTP?
+
+systemctl start ntpd
+systemctl enable ntpd
+
+6) Para qué sirve cada uno de los paquetes instalados en la sección 2.5. Obtenga la información usando comandos del sistema.
+
+pacemaker 
+Gestor de recursos de cluster
+pcs 
+Sistema de configuración de pacemaker/corosync
+psmisc 
+Conjunto de utilidades para manejar los procesos en el sistema (pstree, fuser, killall, peekfd y prtstat)
+policycoreutils-python
+Utilidades de python para operar con políticas de SELinux
+
+7) ¿Cuál es la diferencia entre el método utilizado en 2.4.2 y el uso de ssh-key-gen y ssh-copy-id?
+
+Que en el método del punto 2.4.2 se utiliza el mismo conjunto de clave privada y pública para las dos máquinas, mientras que realizando ssh-keygen y ssh-copy-id genera una clave privada y una clave pública para cada equipo y luego se intercambian las públicas en sus respectivos authorized_keys.
+
+8)¿Para qué sirven los comandos screen y nohup?
+
+screen permite ejecutar algún comando en una terminal, que si se cierra se continua ejecutando, e incluso uno luego puede volver a acceder a esa misma terminal.
+nohup permmite también continuar ejecutando un comando tras cerrar la terminal, pero no permite retomar la consola, solo guarda la finalización del comando en un archivo de log (a.out).
+
+9)¿Cómo verifica que determinado paquete ya se encuentra instalado?
+
+Con los siguientes comandos:
+
+yum list <PAQUETE> 
+yum list installed <PAQUETE> 
+
+
+Preguntas hasta 2.6.3
+10) ¿Qué software de cluster se instala en 2.5? 
+Se instala el software de cluster Pacemaker.
+¿Se instalaron sólo los paquetes indicados en el comando? 
+No, se instalaron esos paquetes, todas sus dependencias y algunas herramientas extras.
+Indique para qué sirve cada paquete instalado y observe el contenido de los mismos. 
+([root@sony01 ~]# rpm -qi --filesbypkg <PAQUETE>)
+ 
+pacemaker 
+Gestor de recursos de cluster
+pacemaker                 /usr/sbin/attrd_updater
+pacemaker                 /usr/sbin/crm_attribute
+pacemaker                 /usr/sbin/crm_master
+pacemaker                 /usr/sbin/crm_node
+pacemaker                 /usr/sbin/fence_pcmk
+pacemaker                 /usr/sbin/pacemakerd
+pacemaker                 /usr/sbin/stonith_admin
+pcs 
+Sistema de configuración de pacemaker/corosync
+pcs                       /usr/sbin/pcs
+El resto son librerías (Python, Ruby y C++)
+psmisc 
+Conjunto de utilidades para manejar los procesos en el sistema (pstree, fuser, killall, peekfd y prtstat)
+psmisc                    /usr/bin/killall
+psmisc                    /usr/bin/peekfd
+psmisc                    /usr/bin/prtstat
+psmisc                    /usr/bin/pstree
+psmisc                    /usr/bin/pstree.x11
+psmisc                    /usr/sbin/fuser
+
+policycoreutils-python
+Utilidades de python para operar con políticas de SELinux
+policycoreutils-python    /usr/bin/audit2allow
+policycoreutils-python    /usr/bin/audit2why
+policycoreutils-python    /usr/bin/chcat
+policycoreutils-python    /usr/bin/sandbox
+policycoreutils-python    /usr/bin/semodule_package
+policycoreutils-python    /usr/sbin/semanage
+
+¿Existen nuevos servicios relacionados al software instalado?
+pacemaker                 /usr/lib/systemd/system/pacemaker.service
+pcs                       /usr/lib/pcsd/pcsd.service
+pcs                       /usr/lib/systemd/system/pcsd.service
+corosync                  /usr/lib/systemd/system/corosync-notifyd.service
+corosync                  /usr/lib/systemd/system/corosync.service                       
+pacemaker-cli             /usr/lib/systemd/system/crm_mon.service
+
+Comando que nos devuelve a qué paquete pertenece el archivo especificado.
+[root@sony01 ~]# yum whatprovides crm_mon
+
+11) ¿Qué repositorios están configurados en cada nodo?
+
+En sony01
+base/7/x86_64                  CentOS-7 - Base                 habilitado: 9.007
+extras/7/x86_64                CentOS-7 - Extras               habilitado:   392
+updates/7/x86_64               CentOS-7 - Updates              habilitado: 2.546
+
+En sony02
+base/7/x86_64                  CentOS-7 - Base                 habilitado: 9.007
+extras/7/x86_64                CentOS-7 - Extras               habilitado:   392
+updates/7/x86_64               CentOS-7 - Updates              habilitado: 2.546
+
+12) Una vez instalado el software de cluster ¿cómo puede verificar los nuevos servicios del sistema?
+
+
+
+
+13) En la sección 2.6 indica hacer cambios en el firewall. ¿Por qué cree que es necesario?¿Cómo puede darse cuenta qué firewall se encuentra en uso? ¿Qué puertos son requeridos para el cluster?
+
+Creemos que es necesario porque al estar corriendo el firewall no podría comunicarse con el otro nodo y viceversa.
+Con systemctl status firewalld.
+Puertos TCP 2224, 3121 y 21064. Puerto UDP 5405.
+ 
+14) Sobre el software pcs, en la sección 2.6.2. 
+¿Cuál es el shell de la cuenta de usuario creada para los fines de pcs?
+
+El shell es nologin, que en realidad es sin shell.
+
+¿Qué efecto tiene dicho shell?
+
+Tiene como efecto que al intentar ingresar con esa cuenta, te muestra un mensaje de que la cuenta no está disponible.
+
+¿Hay otros usuarios con ese shell definido?
+
+Sí, hay 20 más, todos correspondientes a servicios o creados por el sistema.
+[root@sony01 ~]# cat /etc/passwd | grep nologin | wc -l
+20
+
+15) ¿Cuál es el objetivo del link simbólico creado en la sección 2.6.2?
+
+Lo pone al servicio en el target de inicio del sistema.
+
+16) Observe el archivo de configuración creado por pcs para Corosync
+
+El archivo /etc/corosync/corosync.conf contiene datos del cluster y de los miembros del cluster. Como así también datos sobre el archivo de log e info sobre el quorum.
+
+Preguntas a partir de sección 3 y hasta 5.1 (no proceder con 5.2 aún 27/10)
+17) Una vez iniciado los servicios de cluster con pcs verifique el estado de los servicios involucrados con systemctl. Guarde las salidas: observe errores e información provista por los servicios. Sobre qué aspectos del cluster proveen información los servicios.
+
+[root@sony01 ~]# systemctl status pacemaker.service
+● pacemaker.service - Pacemaker High Availability Cluster Manager
+   Loaded: loaded (/usr/lib/systemd/system/pacemaker.service; disabled; vendor preset: disabled)
+   Active: active (running) since jue 2016-10-27 16:13:40 ART; 3min 15s ago
+ Main PID: 18388 (pacemakerd)
+   CGroup: /system.slice/pacemaker.service
+           ├─18388 /usr/sbin/pacemakerd -f
+           ├─18389 /usr/libexec/pacemaker/cib
+           ├─18390 /usr/libexec/pacemaker/stonithd
+           ├─18391 /usr/libexec/pacemaker/lrmd
+           ├─18392 /usr/libexec/pacemaker/attrd
+           ├─18393 /usr/libexec/pacemaker/pengine
+           └─18394 /usr/libexec/pacemaker/crmd
+
+oct 27 16:13:41 sony01 crmd[18394]:   notice: Notifications disabled
+oct 27 16:13:41 sony01 crmd[18394]:   notice: The local CRM is operational
+oct 27 16:13:41 sony01 crmd[18394]:   notice: State transition S_STARTING -... ]
+oct 27 16:13:41 sony01 stonith-ng[18390]:   notice: Watching for stonith top...s
+oct 27 16:13:41 sony01 attrd[18392]:   notice: crm_update_peer_proc: Node s...))
+oct 27 16:13:41 sony01 stonith-ng[18390]:   notice: crm_update_peer_proc: No...)
+oct 27 16:14:02 sony01 crmd[18394]:  warning: FSA: Input I_DC_TIMEOUT from ...NG
+oct 27 16:14:02 sony01 crmd[18394]:   notice: State transition S_ELECTION -... ]
+oct 27 16:14:02 sony01 crmd[18394]:   notice: State transition S_PENDING ->... ]
+oct 27 16:14:02 sony01 attrd[18392]:   notice: Processing sync-response fro...02
+Hint: Some lines were ellipsized, use -l to show in full.
+
+[root@sony01 ~]# systemctl status corosync.service
+● corosync.service - Corosync Cluster Engine
+   Loaded: loaded (/usr/lib/systemd/system/corosync.service; disabled; vendor preset: disabled)
+   Active: active (running) since jue 2016-10-27 16:13:39 ART; 4min 12s ago
+  Process: 18366 ExecStart=/usr/share/corosync/corosync start (code=exited, status=0/SUCCESS)
+ Main PID: 18373 (corosync)
+   CGroup: /system.slice/corosync.service
+           └─18373 corosync
+
+oct 27 16:13:39 sony01 corosync[18373]:  [VOTEQ ] Waiting for all cluster me...2
+oct 27 16:13:39 sony01 corosync[18373]:  [QUORUM] Members[1]: 1
+oct 27 16:13:39 sony01 corosync[18373]:  [MAIN  ] Completed service synchron....
+oct 27 16:13:39 sony01 corosync[18373]:  [TOTEM ] A new membership (10.0.2.1...2
+oct 27 16:13:39 sony01 corosync[18373]:  [VOTEQ ] Waiting for all cluster me...2
+oct 27 16:13:39 sony01 corosync[18373]:  [QUORUM] This node is within the pr....
+oct 27 16:13:39 sony01 corosync[18373]:  [QUORUM] Members[2]: 1 2
+oct 27 16:13:39 sony01 corosync[18373]:  [MAIN  ] Completed service synchron....
+oct 27 16:13:39 sony01 corosync[18366]: Starting Corosync Cluster Engine (co...]
+oct 27 16:13:39 sony01 systemd[1]: Started Corosync Cluster Engine.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+[root@sony02 ~]# systemctl status pacemaker.service
+● pacemaker.service - Pacemaker High Availability Cluster Manager
+   Loaded: loaded (/usr/lib/systemd/system/pacemaker.service; disabled; vendor preset: disabled)
+   Active: active (running) since jue 2016-10-27 16:13:40 ART; 7min ago
+ Main PID: 18057 (pacemakerd)
+   CGroup: /system.slice/pacemaker.service
+           ├─18057 /usr/sbin/pacemakerd -f
+           ├─18058 /usr/libexec/pacemaker/cib
+           ├─18059 /usr/libexec/pacemaker/stonithd
+           ├─18060 /usr/libexec/pacemaker/lrmd
+           ├─18061 /usr/libexec/pacemaker/attrd
+           ├─18062 /usr/libexec/pacemaker/pengine
+           └─18063 /usr/libexec/pacemaker/crmd
+
+oct 27 16:14:02 sony02 pengine[18062]:   notice: Calculated Transition 1: /var/lib/pacemaker/pengine/pe-input-1.bz2
+oct 27 16:14:02 sony02 pengine[18062]:   notice: Configuration ERRORs found during PE processing.  Please run "crm_verify -L" to identify issues.
+oct 27 16:14:02 sony02 pengine[18062]:    error: Resource start-up disabled since no STONITH resources have been defined
+oct 27 16:14:02 sony02 pengine[18062]:    error: Either configure some or disable STONITH with the stonith-enabled option
+oct 27 16:14:02 sony02 pengine[18062]:    error: NOTE: Clusters with shared data need STONITH to ensure data integrity
+oct 27 16:14:02 sony02 pengine[18062]:   notice: Delaying fencing operations until there are resources to manage
+oct 27 16:14:02 sony02 pengine[18062]:   notice: Calculated Transition 2: /var/lib/pacemaker/pengine/pe-input-2.bz2
+oct 27 16:14:02 sony02 pengine[18062]:   notice: Configuration ERRORs found during PE processing.  Please run "crm_verify -L" to identify issues.
+oct 27 16:14:02 sony02 crmd[18063]:   notice: Transition 2 (Complete=0, Pending=0, Fired=0, Skipped=0, Incomplete=0, Source=/var/lib/pacemaker/pengine/pe-...): Complete
+oct 27 16:14:02 sony02 crmd[18063]:   notice: State transition S_TRANSITION_ENGINE -> S_IDLE [ input=I_TE_SUCCESS cause=C_FSA_INTERNAL origin=notify_crmd ]
+Hint: Some lines were ellipsized, use -l to show in full.
+
+[root@sony02 ~]# systemctl status corosync.service
+● corosync.service - Corosync Cluster Engine
+   Loaded: loaded (/usr/lib/systemd/system/corosync.service; disabled; vendor preset: disabled)
+   Active: active (running) since jue 2016-10-27 16:13:39 ART; 6min ago
+  Process: 18035 ExecStart=/usr/share/corosync/corosync start (code=exited, status=0/SUCCESS)
+ Main PID: 18042 (corosync)
+   CGroup: /system.slice/corosync.service
+           └─18042 corosync
+
+oct 27 16:13:39 sony02 corosync[18042]:  [VOTEQ ] Waiting for all cluster members. Current votes: 1 expected_votes: 2
+oct 27 16:13:39 sony02 corosync[18042]:  [VOTEQ ] Waiting for all cluster members. Current votes: 1 expected_votes: 2
+oct 27 16:13:39 sony02 corosync[18042]:  [QUORUM] Members[1]: 2
+oct 27 16:13:39 sony02 corosync[18042]:  [MAIN  ] Completed service synchronization, ready to provide service.
+oct 27 16:13:39 sony02 corosync[18042]:  [TOTEM ] A new membership (10.0.2.157:8) was formed. Members joined: 1
+oct 27 16:13:39 sony02 corosync[18042]:  [QUORUM] This node is within the primary component and will provide service.
+oct 27 16:13:39 sony02 corosync[18042]:  [QUORUM] Members[2]: 1 2
+oct 27 16:13:39 sony02 corosync[18042]:  [MAIN  ] Completed service synchronization, ready to provide service.
+oct 27 16:13:39 sony02 corosync[18035]: Starting Corosync Cluster Engine (corosync): [  OK  ]
+oct 27 16:13:39 sony02 systemd[1]: Started Corosync Cluster Engine.
+
+El error en el servicio pacemaker del nodo sony02 se da porque stonith no se encuentra configurado y tampoco está deshabilitado.
+Nos provee información sobre la sincronización entre los nodos (quórum).
+
+18) Reinicie los nodos y verifique que los servicios no se encuentran en ejecución. Reinicie los servicios esta vez utilizando systemctl. 
+
+No, no se encuentran en ejecución.
+[root@sony01 ~]# systemctl status corosync
+● corosync.service - Corosync Cluster Engine
+   Loaded: loaded (/usr/lib/systemd/system/corosync.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+[root@sony01 ~]# systemctl status pacemaker
+● pacemaker.service - Pacemaker High Availability Cluster Manager
+   Loaded: loaded (/usr/lib/systemd/system/pacemaker.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+
+[root@sony01 ~]# systemctl start corosync
+[root@sony01 ~]# systemctl start pacemaker
+[root@sony01 ~]# systemctl status corosync
+● corosync.service - Corosync Cluster Engine
+   Loaded: loaded (/usr/lib/systemd/system/corosync.service; disabled; vendor preset: disabled)
+   Active: active (running) since jue 2016-10-27 16:51:39 ART; 8s ago
+  Process: 2412 ExecStart=/usr/share/corosync/corosync start (code=exited, status=0/SUCCESS)
+ Main PID: 2419 (corosync)
+   CGroup: /system.slice/corosync.service
+           └─2419 corosync
+
+oct 27 16:51:38 sony01 corosync[2419]:  [TOTEM ] adding new UDPU member {10.0.2.157}
+oct 27 16:51:38 sony01 corosync[2419]:  [TOTEM ] adding new UDPU member {10.0.2.158}
+oct 27 16:51:38 sony01 corosync[2419]:  [TOTEM ] A new membership (10.0.2.157:1... 1
+oct 27 16:51:38 sony01 corosync[2419]:  [VOTEQ ] Waiting for all cluster member... 2
+oct 27 16:51:38 sony01 corosync[2419]:  [VOTEQ ] Waiting for all cluster member... 2
+oct 27 16:51:38 sony01 corosync[2419]:  [VOTEQ ] Waiting for all cluster member... 2
+oct 27 16:51:38 sony01 corosync[2419]:  [QUORUM] Members[1]: 1
+oct 27 16:51:38 sony01 corosync[2419]:  [MAIN  ] Completed service synchronizat...e.
+oct 27 16:51:39 sony01 corosync[2412]: Starting Corosync Cluster Engine (corosy... ]
+oct 27 16:51:39 sony01 systemd[1]: Started Corosync Cluster Engine.
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@sony01 ~]# systemctl status pacemaker
+● pacemaker.service - Pacemaker High Availability Cluster Manager
+   Loaded: loaded (/usr/lib/systemd/system/pacemaker.service; disabled; vendor preset: disabled)
+   Active: active (running) since jue 2016-10-27 16:51:45 ART; 17s ago
+ Main PID: 2430 (pacemakerd)
+   CGroup: /system.slice/pacemaker.service
+           ├─2430 /usr/sbin/pacemakerd -f
+           ├─2431 /usr/libexec/pacemaker/cib
+           ├─2432 /usr/libexec/pacemaker/stonithd
+           ├─2433 /usr/libexec/pacemaker/lrmd
+           ├─2434 /usr/libexec/pacemaker/attrd
+           ├─2435 /usr/libexec/pacemaker/pengine
+           └─2436 /usr/libexec/pacemaker/crmd
+
+oct 27 16:51:45 sony01 cib[2431]:   notice: Connecting to cluster infrastructur...nc
+oct 27 16:51:45 sony01 cib[2431]:   notice: crm_update_peer_proc: Node sony01[1...))
+oct 27 16:51:46 sony01 crmd[2436]:   notice: Connecting to cluster infrastructu...nc
+oct 27 16:51:46 sony01 crmd[2436]:   notice: Quorum lost
+oct 27 16:51:46 sony01 crmd[2436]:   notice: pcmk_quorum_notification: Node son...))
+oct 27 16:51:46 sony01 crmd[2436]:   notice: Notifications disabled
+oct 27 16:51:46 sony01 crmd[2436]:   notice: The local CRM is operational
+oct 27 16:51:46 sony01 crmd[2436]:   notice: State transition S_STARTING -> S_P... ]
+oct 27 16:51:46 sony01 stonith-ng[2432]:   notice: Watching for stonith topolog...es
+oct 27 16:51:56 sony01 systemd[1]: Started Pacemaker High Availability Cluster ...r.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+19) Ejecute las verificaciones en las secciones 4.2 y 4.3 en ambos nodos, observe diferencias. 
+
+[root@sony01 ~]# corosync-cfgtool -s
+Printing ring status.
+Local node ID 1
+RING ID 0
+	id	= 10.0.2.157
+	status	= ring 0 active with no faults
+[root@sony01 ~]# 
+
+[root@sony02 ~]# corosync-cfgtool -s
+Printing ring status.
+Local node ID 2
+RING ID 0
+	id	= 10.0.2.158
+	status	= ring 0 active with no faults
+
+Cambia el número de nodo y su respectiva IP.
+
+[root@sony01 ~]#  corosync-cmapctl  | grep members
+runtime.totem.pg.mrp.srp.members.1.config_version (u64) = 0
+runtime.totem.pg.mrp.srp.members.1.ip (str) = r(0) ip(10.0.2.157) 
+runtime.totem.pg.mrp.srp.members.1.join_count (u32) = 1
+runtime.totem.pg.mrp.srp.members.1.status (str) = joined
+runtime.totem.pg.mrp.srp.members.2.config_version (u64) = 0
+runtime.totem.pg.mrp.srp.members.2.ip (str) = r(0) ip(10.0.2.158) 
+runtime.totem.pg.mrp.srp.members.2.join_count (u32) = 1
+runtime.totem.pg.mrp.srp.members.2.status (str) = joined
+
+[root@sony02 ~]#  corosync-cmapctl  | grep members
+runtime.totem.pg.mrp.srp.members.1.config_version (u64) = 0
+runtime.totem.pg.mrp.srp.members.1.ip (str) = r(0) ip(10.0.2.157) 
+runtime.totem.pg.mrp.srp.members.1.join_count (u32) = 1
+runtime.totem.pg.mrp.srp.members.1.status (str) = joined
+runtime.totem.pg.mrp.srp.members.2.config_version (u64) = 0
+runtime.totem.pg.mrp.srp.members.2.ip (str) = r(0) ip(10.0.2.158) 
+runtime.totem.pg.mrp.srp.members.2.join_count (u32) = 1
+runtime.totem.pg.mrp.srp.members.2.status (str) = joined
+
+Este comando da exactamente igual en los dos nodos.
+
+[root@sony01 ~]# pcs status corosync
+
+Membership information
+----------------------
+    Nodeid      Votes Name
+         1          1 sony01 (local)
+         2          1 sony02
+
+[root@sony02 ~]# pcs status corosync
+
+Membership information
+----------------------
+    Nodeid      Votes Name
+         1          1 sony01
+         2          1 sony02 (local)
+
+Cambia el nodo local en base al nodo en el que corremos el comando.
+
+[root@sony01 ~]# ps axf | grep pace | grep -v grep
+18388 ?        Ss     0:00 /usr/sbin/pacemakerd -f
+18389 ?        Ss     0:00  \_ /usr/libexec/pacemaker/cib
+18390 ?        Ss     0:00  \_ /usr/libexec/pacemaker/stonithd
+18391 ?        Ss     0:00  \_ /usr/libexec/pacemaker/lrmd
+18392 ?        Ss     0:00  \_ /usr/libexec/pacemaker/attrd
+18393 ?        Ss     0:00  \_ /usr/libexec/pacemaker/pengine
+18394 ?        Ss     0:00  \_ /usr/libexec/pacemaker/crmd
+
+[root@sony02 ~]# ps axf | grep pace | grep -v grep
+18057 ?        Ss     0:00 /usr/sbin/pacemakerd -f
+18058 ?        Ss     0:00  \_ /usr/libexec/pacemaker/cib
+18059 ?        Ss     0:00  \_ /usr/libexec/pacemaker/stonithd
+18060 ?        Ss     0:00  \_ /usr/libexec/pacemaker/lrmd
+18061 ?        Ss     0:00  \_ /usr/libexec/pacemaker/attrd
+18062 ?        Ss     0:00  \_ /usr/libexec/pacemaker/pengine
+18063 ?        Ss     0:00  \_ /usr/libexec/pacemaker/crmd
+
+[root@sony01 ~]# pcs status
+Cluster name: micluster
+WARNING: no stonith devices and stonith-enabled is not false
+Last updated: Thu Oct 27 16:35:42 2016		Last change: Thu Oct 27 16:14:02 2016 by hacluster via crmd on sony02
+Stack: corosync
+Current DC: sony02 (version 1.1.13-10.el7_2.4-44eb2dd) - partition with quorum
+2 nodes and 0 resources configured
+
+Online: [ sony01 sony02 ]
+
+Full list of resources:
+
+
+PCSD Status:
+  sony01: Online
+  sony02: Online
+
+Daemon Status:
+  corosync: active/disabled
+  pacemaker: active/disabled
+  pcsd: active/enabled
+
+[root@sony02 ~]# pcs status
+Cluster name: micluster
+WARNING: no stonith devices and stonith-enabled is not false
+Last updated: Thu Oct 27 16:36:39 2016		Last change: Thu Oct 27 16:14:02 2016 by hacluster via crmd on sony02
+Stack: corosync
+Current DC: sony02 (version 1.1.13-10.el7_2.4-44eb2dd) - partition with quorum
+2 nodes and 0 resources configured
+
+Online: [ sony01 sony02 ]
+
+Full list of resources:
+
+
+PCSD Status:
+  sony01: Online
+  sony02: Online
+
+Daemon Status:
+  corosync: active/disabled
+  pacemaker: active/disabled
+  pcsd: active/enabled
+
+Las dos comprobaciones devuelven el mismo contenido.
+
+[root@sony01 ~]# journalctl | grep -i error
+oct 20 17:57:17 sony01 passwd[2533]: pam_pwquality(passwd:chauthtok): pam_get_authtok_verify returned error: Error de comprobación preliminar del servicio de contraseña
+[root@sony01 ~]# 
+
+[root@sony02 ~]# journalctl | grep -i error
+oct 27 16:14:02 sony02 pengine[18062]:    error: Resource start-up disabled since no STONITH resources have been defined
+oct 27 16:14:02 sony02 pengine[18062]:    error: Either configure some or disable STONITH with the stonith-enabled option
+oct 27 16:14:02 sony02 pengine[18062]:    error: NOTE: Clusters with shared data need STONITH to ensure data integrity
+oct 27 16:14:02 sony02 pengine[18062]:   notice: Configuration ERRORs found during PE processing.  Please run "crm_verify -L" to identify issues.
+oct 27 16:14:02 sony02 pengine[18062]:    error: Resource start-up disabled since no STONITH resources have been defined
+oct 27 16:14:02 sony02 pengine[18062]:    error: Either configure some or disable STONITH with the stonith-enabled option
+oct 27 16:14:02 sony02 pengine[18062]:    error: NOTE: Clusters with shared data need STONITH to ensure data integrity
+oct 27 16:14:02 sony02 pengine[18062]:   notice: Configuration ERRORs found during PE processing.  Please run "crm_verify -L" to identify issues.
+oct 27 16:14:02 sony02 pengine[18062]:    error: Resource start-up disabled since no STONITH resources have been defined
+oct 27 16:14:02 sony02 pengine[18062]:    error: Either configure some or disable STONITH with the stonith-enabled option
+oct 27 16:14:02 sony02 pengine[18062]:    error: NOTE: Clusters with shared data need STONITH to ensure data integrity
+oct 27 16:14:02 sony02 pengine[18062]:   notice: Configuration ERRORs found during PE processing.  Please run "crm_verify -L" to identify issues.
+oct 27 16:29:02 sony02 pengine[18062]:    error: Resource start-up disabled since no STONITH resources have been defined
+oct 27 16:29:02 sony02 pengine[18062]:    error: Either configure some or disable STONITH with the stonith-enabled option
+oct 27 16:29:02 sony02 pengine[18062]:    error: NOTE: Clusters with shared data need STONITH to ensure data integrity
+oct 27 16:29:02 sony02 pengine[18062]:   notice: Configuration ERRORs found during PE processing.  Please run "crm_verify -L" to identify issues.
+
+En el nodo 2 la falta de configuración de STONITH aporta una larga serie de errores (WARNINGS).
+
+20) En la sección 4.3 identifique cada uno de los procesos hijos de pacemakerd. Investigue su funcionalidad brevemente para entender qué parte del cluster implementan. 
+
+   CGroup: /system.slice/pacemaker.service
+           ├─2430 /usr/sbin/pacemakerd -f
+           ├─2431 /usr/libexec/pacemaker/cib
+           ├─2432 /usr/libexec/pacemaker/stonithd
+           ├─2433 /usr/libexec/pacemaker/lrmd
+           ├─2434 /usr/libexec/pacemaker/attrd
+           ├─2435 /usr/libexec/pacemaker/pengine
+           └─2436 /usr/libexec/pacemaker/crmd
+
+CIB utiliza XML para representar la configuración del cluster y del estado de los recursos del mismo. Sus contenidos se mantienen sincronizados a lo largo del cluster y son usados por PEngine para computar el estado ideal del cluster y cómo se debería alcanzar el mismo. 
+Al DC (coordinador designado) le pasan la lista de instrucciones. Pacemaker designa uno de los CRMd (Cluster Resource Management Daemon) como el master (maestro) y si ese o el nodo en el que corre se cae, se elige uno nuevo.
+El DC ejecuta las órdenes de PEngine pasándoselas a LRMd o a los CRMd en otros nodos. Los CRMd de los otros nodos se lo pasan a sus LRMd locales.
+STONITHd es el demonio que se encarga de entender la topología STONITH para que sus clientes simplemente requieran que un nodo sea excluido y el hace el resto.
+Attrd coordina la actualización de ciertos valores del CIB.
+
+21) ¿A qué paquete pertenece el comando journalctl? ¿Los errores pertenecen todos a STONITH?
+
+journalctl pertenece a systemd. No, los errores que aparecen son todos los errores del sistema.
+
+22) Observe el log de Corosync
+
+Loguea todo lo que hacen los demonios, en la medida en que van realizando cada evento.
+Como prueba, buscamos el registro del cambio de la configuración de STONITH, a false, o sea, deshabilitamos STNOITH.
+
+Oct 27 16:45:05 [18389] sony01        cib:     info: cib_perform_op:	++ /cib/configuration/crm_config/cluster_property_set[@id='cib-bootstrap-options']:  <nvpair id="cib-bootstrap-options-stonith-enabled" name="stonith-enabled" value="false"/>
+
